@@ -11,24 +11,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class CheckIsAuthorListener
 {
-    /** @var RouterInterface */
     protected $router;
 
-    /** @var SessionInterface */
     protected $session;
 
-    /** @var TokenStorageInterface */
     private $tokenStorage;
 
-    /** @var EntityManagerInterface */
     private $entityManager;
 
-    /**
-     * @param RouterInterface $router
-     * @param SessionInterface $session
-     * @param TokenStorageInterface $tokenStorage
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(
         RouterInterface $router,
         SessionInterface $session,
@@ -41,13 +31,6 @@ class CheckIsAuthorListener
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * On kernel.controller
-     *
-     * @param FilterControllerEvent $event
-     *
-     * @return void
-     */
     public function onKernelController(FilterControllerEvent $event)
     {
         // Don't add to the flasher if the current path does not begin with /admin
