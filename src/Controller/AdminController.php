@@ -9,31 +9,23 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Author;
 use App\Form\AuthorFormType;
 
-/** @var EntityManagerInterface */
-private $entityManager;
-
-/** @var \Doctrine\Common\Persistence\ObjectRepository */
-private $authorRepository;
-
-/** @var \Doctrine\Common\Persistence\ObjectRepository */
-private $blogPostRepository;
-
-/**
- * @param EntityManagerInterface $entityManager
- */
-public function __construct(EntityManagerInterface $entityManager)
-{
-    $this->entityManager = $entityManager;
-    $this->blogPostRepository = $entityManager->getRepository('App:BlogPost');
-    $this->authorRepository = $entityManager->getRepository('App:Author');
-}
 class AdminController extends AbstractController
 {
+  private $entityManager;
+  private $authorRepository;
+  private $blogPostRepository;
+  public function __construct(EntityManagerInterface $entityManager)
+  {
+      $this->entityManager = $entityManager;
+      $this->blogPostRepository = $entityManager->getRepository('App:BlogPost');
+      $this->authorRepository = $entityManager->getRepository('App:Author');
+  }
     /**
      * @Route("/admin", name="admin")
      */
      public function createAuthorAction(Request $request)
    {
+
        if ($this->authorRepository->findOneByUsername($this->getUser()->getUserName())) {
            // Redirect to dashboard.
            $this->addFlash('error', 'Unable to create author, author already exists!');
