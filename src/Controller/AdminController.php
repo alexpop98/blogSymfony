@@ -8,9 +8,42 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Author;
 use App\Form\AuthorFormType;
+use App\Entity\BlogPost;
+use App\Form\EntryFormType;
 
 class AdminController extends AbstractController
 {
+  /**
+ * @Route("/create-entry", name="admin_create_entry")
+ *
+ * @param Request $request
+ *
+ * @return \Symfony\Component\HttpFoundation\Response
+ */
+public function createEntryAction(Request $request)
+{
+    $blogPost = new BlogPost();
+
+    $author = $this->authorRepository->findOneByUsername($this->getUser()->getUserName());
+    $blogPost->setAuthor($author);
+
+    $form = $this->createForm(EntryFormType::class, $blogPost);
+    $form->handleRequest($request);
+
+    // Check is valid
+    if ($form->isSubmitted() && $form->isValid()) {
+        $this->entityManager->persist($blogPost);
+        $this->entityManager->flush($blogPost);
+
+        $this->addFlash('success', 'Congratulations! Your post is created');
+
+        return $this->redirectToRoute('admin_entries');
+    }
+
+    return $this->render('admin/entry_form.html.twig', [
+        'form' => $form->createView()
+    ]);
+}
   private $entityManager;
   private $authorRepository;
   private $blogPostRepository;
